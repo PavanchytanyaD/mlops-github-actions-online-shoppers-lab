@@ -1,10 +1,10 @@
 {
   "champion": {
-    "version": "v1",
-    "timestamp": "20261115165722",
-    "model_file": "model_20261115165722.joblib",
-    "pr_auc": 0.7247,
-    "roc_auc": 0.9258
+    "version": "v2",
+    "timestamp": "20261115165821",
+    "model_file": "model_20261115165821.joblib",
+    "pr_auc": 0.7299,
+    "roc_auc": 0.9278
   },
   "history": [
     {
@@ -14,6 +14,14 @@
       "roc_auc": 0.9258,
       "training_rows": 2441,
       "version": "v1"
+    },
+    {
+      "timestamp": "20261115165821",
+      "decision": "promote",
+      "pr_auc": 0.7299,
+      "roc_auc": 0.9278,
+      "training_rows": 4882,
+      "version": "v2"
     }
   ]
 }
