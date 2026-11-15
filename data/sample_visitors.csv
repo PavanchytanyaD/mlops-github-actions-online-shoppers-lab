@@ -1,0 +1,7 @@
+Month,VisitorType,OperatingSystems,Browser,Region,TrafficType,Administrative,Administrative_Duration,Informational,Informational_Duration,ProductRelated,ProductRelated_Duration,BounceRates,ExitRates,PageValues,SpecialDay,Weekend
+Nov,Returning_Visitor,2,2,3,2,11,202.4254386,5,1767.666667,338,13265.35595,0.007520348,0.018855633,1.114150182,0.0,0
+May,Returning_Visitor,2,4,3,4,1,55.0,2,18.0,9,548.0,0.0,0.04,17.2704,0.0,0
+Jul,Returning_Visitor,4,1,1,4,7,73.23333333,1,0.0,310,7710.731416,3.94e-05,0.00751105,0.098621403,0.0,0
+May,Returning_Visitor,2,2,1,11,0,0.0,0,0.0,42,1433.083333,0.005,0.02575,0.0,0.4,0
+Nov,New_Visitor,3,2,9,10,0,0.0,0,0.0,11,115.25,0.027272727,0.045454545,0.0,0.0,1
+Oct,Returning_Visitor,1,1,1,5,4,69.96666667,0,0.0,28,2728.755,0.0,0.009313725,0.0,0.0,0
