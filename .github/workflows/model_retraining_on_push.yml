@@ -1,0 +1,119 @@
+name: Model Retraining with Quality Gate
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/batches/**'
+      - 'src/**'
+      - 'params.yaml'
+      - 'requirements.txt'
+  pull_request:
+    paths:
+      - 'data/batches/**'
+      - 'src/**'
+      - 'params.yaml'
+      - 'requirements.txt'
+  workflow_dispatch:
+
+# Runs one at a time, so two runs never update models/registry.json together
+concurrency:
+  group: model-retraining
+  cancel-in-progress: false
+
+jobs:
+  train-and-evaluate:
+    runs-on: ubuntu-latest
+    outputs:
+      promote: ${{ steps.evaluate.outputs.promote }}
+      timestamp: ${{ steps.timestamp.outputs.timestamp }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate and Store Timestamp
+        id: timestamp
+        run: echo "timestamp=$(date -u '+%Y%m%d%H%M%S')" >> "$GITHUB_OUTPUT"
+
+      - name: Train Model
+        run: python src/train_model.py --timestamp "${{ steps.timestamp.outputs.timestamp }}"
+
+      - name: Evaluate Model and Apply Quality Gate
+        id: evaluate
+        run: python src/evaluate_model.py --timestamp "${{ steps.timestamp.outputs.timestamp }}"
+
+      - name: Upload model and metrics
+        uses: actions/upload-artifact@v4
+        with:
+          name: model-${{ steps.timestamp.outputs.timestamp }}
+          path: |
+            model_${{ steps.timestamp.outputs.timestamp }}.joblib
+            model_${{ steps.timestamp.outputs.timestamp }}_train.json
+            ${{ steps.timestamp.outputs.timestamp }}_metrics.json
+
+  # Only on main: pull requests show the gate result but never change the registry
+  promote:
+    needs: train-and-evaluate
+    if: github.event_name != 'pull_request' && needs.train-and-evaluate.outputs.promote == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: model-${{ needs.train-and-evaluate.outputs.timestamp }}
+      - name: Store and Version the New Model
+        run: python src/registry.py --timestamp "${{ needs.train-and-evaluate.outputs.timestamp }}"
+      - name: Commit and Push Changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add models/ metrics/
+          git commit -m "promote model ${{ needs.train-and-evaluate.outputs.timestamp }}"
+          git pull --rebase
+          git push
+
+  record-rejection:
+    needs: train-and-evaluate
+    if: github.event_name != 'pull_request' && needs.train-and-evaluate.outputs.promote == 'false'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: model-${{ needs.train-and-evaluate.outputs.timestamp }}
+      - name: Record the rejected model (the champion stays)
+        run: python src/registry.py --timestamp "${{ needs.train-and-evaluate.outputs.timestamp }}"
+      - name: Commit and Push Changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add models/registry.json metrics/
+          git commit -m "record rejected model ${{ needs.train-and-evaluate.outputs.timestamp }}"
+          git pull --rebase
+          git push
