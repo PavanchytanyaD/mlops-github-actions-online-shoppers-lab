@@ -1,0 +1,59 @@
+{
+  "timestamp": "20261115165930",
+  "decision": "promote",
+  "training": {
+    "timestamp": "20261115165930",
+    "training_rows": 7323,
+    "batches": [
+      "batch_01.csv",
+      "batch_02.csv",
+      "batch_03.csv"
+    ],
+    "positive_rate": 0.1584,
+    "boosting_iterations": 93
+  },
+  "holdout_rows": 2441,
+  "metrics": {
+    "pr_auc": 0.74,
+    "roc_auc": 0.9315,
+    "brier": 0.0702,
+    "calibration_error": 0.0177,
+    "buyers_in_top_10pct": 0.5052,
+    "precision_at_0.5": 0.7372,
+    "recall_at_0.5": 0.6387,
+    "f1_at_0.5": 0.6844
+  },
+  "champion_version": "v2",
+  "champion_metrics": {
+    "pr_auc": 0.7299,
+    "roc_auc": 0.9278,
+    "brier": 0.073,
+    "calibration_error": 0.0292,
+    "buyers_in_top_10pct": 0.4948,
+    "precision_at_0.5": 0.6982,
+    "recall_at_0.5": 0.5995,
+    "f1_at_0.5": 0.6451
+  },
+  "checks": [
+    {
+      "check": "PR-AUC above minimum",
+      "passed": true,
+      "detail": "0.74 >= 0.6"
+    },
+    {
+      "check": "ROC-AUC above minimum",
+      "passed": true,
+      "detail": "0.9315 >= 0.85"
+    },
+    {
+      "check": "Calibration error below maximum",
+      "passed": true,
+      "detail": "0.0177 <= 0.05"
+    },
+    {
+      "check": "Not worse than champion",
+      "passed": true,
+      "detail": "0.74 >= 0.7299 - 0.005 = 0.7249"
+    }
+  ]
+}
