@@ -1,4 +1,4 @@
-# Continuous Training with a Quality Gate: MLOps GitHub Actions Lab
+# Using GitHub Actions for Model Training and Versioning
 
 This lab uses GitHub Actions to retrain a machine learning model every time new
 data or code is pushed, check the new model against the current one, and only
