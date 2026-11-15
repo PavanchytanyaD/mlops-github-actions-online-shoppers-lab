@@ -14,7 +14,7 @@ TARGET = "Revenue"
 CATEGORICAL = ["Month", "VisitorType", "OperatingSystems", "Browser", "Region", "TrafficType"]
 NUMERIC = ["Administrative", "Administrative_Duration", "Informational", "Informational_Duration",
            "ProductRelated", "ProductRelated_Duration", "BounceRates", "ExitRates",
-           "PageValues", "SpecialDay", "Weekend"]
+           "SpecialDay", "Weekend"]
 FEATURES = CATEGORICAL + NUMERIC
 
 
