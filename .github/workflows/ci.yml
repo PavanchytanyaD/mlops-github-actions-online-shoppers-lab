@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+      - name: Run tests
+        run: pytest -v
+
+  docker:
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the image
+        run: docker build -t online-shoppers-model .
+      - name: Train, evaluate and predict inside the image
+        run: |
+          docker run --rm online-shoppers-model sh -c "
+            python src/train_model.py --timestamp ci &&
+            python src/evaluate_model.py --timestamp ci &&
+            python src/predict.py data/sample_visitors.csv --model model_ci.joblib"
