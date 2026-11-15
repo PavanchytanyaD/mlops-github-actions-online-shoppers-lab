@@ -1,0 +1,17 @@
+# Model settings used by src/train_model.py
+model:
+  max_iter: 500
+  learning_rate: 0.05
+  max_leaf_nodes: 31
+  l2_regularization: 1.0
+  validation_fraction: 0.15
+  n_iter_no_change: 30
+  random_state: 42
+
+# Quality gate used by src/evaluate_model.py.
+# A new model is promoted only if every check passes.
+gate:
+  min_pr_auc: 0.60          # average precision on the holdout set
+  min_roc_auc: 0.85
+  max_calibration_error: 0.05
+  max_pr_auc_drop: 0.005    # how much worse than the current champion is still accepted
