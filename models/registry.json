@@ -1,0 +1,19 @@
+{
+  "champion": {
+    "version": "v1",
+    "timestamp": "20261115165722",
+    "model_file": "model_20261115165722.joblib",
+    "pr_auc": 0.7247,
+    "roc_auc": 0.9258
+  },
+  "history": [
+    {
+      "timestamp": "20261115165722",
+      "decision": "promote",
+      "pr_auc": 0.7247,
+      "roc_auc": 0.9258,
+      "training_rows": 2441,
+      "version": "v1"
+    }
+  ]
+}
